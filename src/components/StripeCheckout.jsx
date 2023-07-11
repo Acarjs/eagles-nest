@@ -48,7 +48,18 @@ const CheckoutForm = () => {
   }
 
   const createPaymentIntent = async () => {
-    console.log('hello from stripe checkout')
+    try {
+      const { data } = await axios.post(
+        '/.netlify/functions/payment',
+        JSON.stringify({ cart, shippingFee, totalAmount })
+      ) //if everything is fine I should get back client_secret
+
+      //3
+      console.log(data.clientSecret)
+      setClientSecret(data.clientSecret)
+    } catch (error) {
+      console.log(error.response)
+    }
   }
 
   useEffect(() => {
