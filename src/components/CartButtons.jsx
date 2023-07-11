@@ -10,7 +10,7 @@ import { useUserContext } from '../context/user_context'
 const CartButtons = () => {
   const data = useProductsContext()
   const { closeSidebar } = data
-  const { totalItems } = useCartContext()
+  const { totalItems, clearCart } = useCartContext()
 
   const { loginWithRedirect, myUser, logout } = useUserContext()
 
@@ -28,7 +28,10 @@ const CartButtons = () => {
         <button
           type="button"
           className="log-btn logout"
-          onClick={() => logout({ returnTo: window.location.origin })}
+          onClick={() => {
+            clearCart()
+            logout({ returnTo: window.location.origin })
+          }}
         >
           Logout <FaUserTimes />
         </button>
