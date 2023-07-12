@@ -25,6 +25,7 @@ const CheckoutForm = () => {
   const [processing, setProcessing] = useState('')
   const [disabled, setDisabled] = useState(true)
   const [clientSecret, setClientSecret] = useState('')
+  const [email, setEmail] = useState('')
   const stripe = useStripe()
   const elements = useElements()
 
@@ -55,7 +56,7 @@ const CheckoutForm = () => {
       ) //if everything is fine I should get back client_secret
 
       //3
-      console.log(data.clientSecret)
+      // console.log(data.clientSecret)
       setClientSecret(data.clientSecret)
     } catch (error) {
       console.log(error.response)
@@ -67,15 +68,62 @@ const CheckoutForm = () => {
     //eslint-disable-next-line
   }, [])
 
-  const handleChange = async (event) => {}
+  const handleChange = async (event) => {
+    setDisabled(event.empty)
+    setError(event.error ? event.error.message : '')
+  }
 
-  const handleSubmit = async (ev) => {}
+  const handleSubmit = async (ev) => {
+    ev.preventDefault()
+    setProcessing(true)
+
+    const payload = await stripe.confirmCardPayment(clientSecret, {
+      payment_method: {
+        card: elements.getElement(CardElement),
+      },
+    })
+
+    if (payload.error) {
+      setError(`Payment failed ${payload.error.message}`)
+      setProcessing(false)
+    } else {
+      setError(null)
+      setProcessing(false)
+      setSucceeded(true)
+      setTimeout(() => {
+        clearCart()
+        history.push('/')
+      }, 10000)
+    }
+  }
 
   return (
-    <>
+    <div>
+      {succeeded ? (
+        <article>
+          <h4>Thank you for shopping,</h4>
+          <h4>Your payment was successful :)</h4>
+          <h4> You will be redirecting to home page shortly. </h4>
+        </article>
+      ) : (
+        <article>
+          <h4> Hello, {myUser && myUser.name} </h4>
+          <p> Your total shopping is : €{shippingFee + totalAmount}</p>
+          <p className="small">
+            {' '}
+            <em>Test card number : 4242 4242 4242 4242</em>{' '}
+          </p>
+        </article>
+      )}
       <form id="payment-form" onSubmit={handleSubmit}>
-        <label htmlFor="address">Enter address</label>
-        <input type="text" id="address" />
+        <input
+          type="text"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Enter email address"
+        />
+        <input type="text" id="name" placeholder="Enter your name" />
+        <input type="text" id="address" placeholder="Enter your post address" />
         <CardElement
           id="card-element"
           options={cardStyle}
@@ -106,7 +154,7 @@ const CheckoutForm = () => {
           Refresh the page to pay again.
         </p>
       </form>
-    </>
+    </div>
   )
 }
 
@@ -121,6 +169,20 @@ const StripeCheckout = () => {
 }
 
 const Wrapper = styled.section`
+  article {
+    text-align: center;
+    h4 {
+      text-transform: none;
+    }
+    p {
+      font-weight: 700;
+    }
+    .small {
+      font-weight: 100;
+      font-size: 0.7rem;
+    }
+  }
+
   form {
     width: 30vw;
     margin: 0 auto;
