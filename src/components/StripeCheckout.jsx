@@ -10,14 +10,14 @@ import {
 import axios from 'axios'
 import { useCartContext } from '../context/cart_context'
 import { useUserContext } from '../context/user_context'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const promise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY)
 
 const CheckoutForm = () => {
   const { cart, totalAmount, shippingFee, clearCart } = useCartContext()
   const { myUser } = useUserContext()
-  const history = useHistory()
+  const navigate = useNavigate()
 
   //https://stripe.com/docs/payments/card-element
   const [succeeded, setSucceeded] = useState(false)
@@ -78,6 +78,7 @@ const CheckoutForm = () => {
     setProcessing(true)
 
     const payload = await stripe.confirmCardPayment(clientSecret, {
+      receipt_email: email,
       payment_method: {
         card: elements.getElement(CardElement),
       },
@@ -92,7 +93,7 @@ const CheckoutForm = () => {
       setSucceeded(true)
       setTimeout(() => {
         clearCart()
-        history.push('/')
+        navigate('/')
       }, 10000)
     }
   }
