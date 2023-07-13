@@ -17,7 +17,7 @@ const CartContent = () => {
       })}
       <hr />
       <div className="link-container">
-        <Link to="/products" className="btn">
+        <Link to="/products" className="link-btn">
           continue shopping
         </Link>
         <button
@@ -41,7 +41,7 @@ const Wrapper = styled.section`
   }
   .link-btn {
     background: transparent;
-    background: var(--primary-600);
+    background: var(--primary-999);
     border-color: transparent;
     color: var(--primary-0);
     text-transform: capitalize;
@@ -50,6 +50,9 @@ const Wrapper = styled.section`
     letter-spacing: var(--spacing);
     font-weight: 400;
     cursor: pointer;
+  }
+  .link-btn:hover {
+    background: var(--primary-700);
   }
   .clear-btn {
     background: var(--red-800);

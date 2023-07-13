@@ -86,7 +86,7 @@ const Wrapper = styled.section`
     }
     div {
       display: flex;
-      gap: 1rem;
+      gap: 0.2rem;
     }
 
     .size-btn {

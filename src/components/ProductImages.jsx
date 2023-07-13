@@ -40,7 +40,7 @@ const Wrapper = styled.section`
     gap: 1rem;
 
     img {
-      width: 25%;
+      width: 21%;
       height: 200px;
       cursor: pointer;
       border: 1px solid var(--red-999);

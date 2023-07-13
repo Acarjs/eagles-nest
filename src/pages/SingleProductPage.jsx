@@ -111,7 +111,6 @@ const Wrapper = styled.main`
 
   .info {
     text-transform: none;
-
     width: 300px;
     display: grid;
     grid-template-columns: 125px 1fr;
